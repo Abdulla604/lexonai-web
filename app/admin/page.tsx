@@ -1,1 +1,7 @@
-const ADMIN_EMAIL = "abdullaurolovv@gmail.com";
+export default function AdminPage() {
+  return (
+    <div>
+      <h1>Admin Panel</h1>
+    </div>
+  );
+}
