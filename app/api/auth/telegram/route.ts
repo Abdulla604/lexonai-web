@@ -1,37 +1,26 @@
-import { NextResponse } from "next/server";
-import crypto from "crypto";
-
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   try {
-    const userData = await request.json();
-    const botToken = process.env.TELEGRAM_BOT_TOKEN;
+    const user = await req.json();
+    const TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 
-    if (!botToken) {
-      return NextResponse.json({ error: "Bot token topilmadi" }, { status: 500 });
+    // Token mavjudligini tekshirish
+    if (!TOKEN) {
+      return Response.json({ success: false, error: "Bot token topilmadi" }, { status: 500 });
     }
 
-    // Telegramdan kelgan ma'lumotlar xavfsizligini tekshirish (Hash verification)
-    const { hash, ...dataToCheck } = userData;
-    const checkString = Object.keys(dataToCheck)
-      .sort()
-      .map((key) => `${key}=${dataToCheck[key]}`)
-      .join("\n");
+    // Telegram bot orqali foydalanuvchiga xabar yuborish
+    const response = await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: user.id,
+        text: `Salom ${user.first_name}! LexonAI ga muvaffaqiyatli kirdingiz.`,
+      }),
+    });
 
-    const secretKey = crypto.createHash("sha256").update(botToken).digest();
-    const hmac = crypto
-      .createHmac("sha256", secretKey)
-      .update(checkString)
-      .digest("hex");
-
-    if (hmac !== hash) {
-      return NextResponse.json({ error: "Xavfsizlik xatosi: Ma'lumot soxtalashtirilgan" }, { status: 403 });
-    }
-
-    // Bu yerda foydalanuvchini Supabase bazasiga saqlashingiz yoki seans (session) ochishingiz mumkin
-    // Masalan, cookies yoki token o'rnatish:
-
-    return NextResponse.json({ success: true, user: userData });
+    const data = await response.json();
+    return Response.json({ success: data.ok });
   } catch (error) {
-    return NextResponse.json({ error: "Server xatosi" }, { status: 500 });
+    return Response.json({ success: false, error: "Server xatoligi" }, { status: 500 });
   }
 }
