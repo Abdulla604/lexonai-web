@@ -46,7 +46,7 @@ export default function BooksPage() {
     }
   }
 
-  // FAQT MODERATSIYADAN O'TGAN (APPROVED) KITOBLARNI CHIQARISH
+  // FAQAT MODERATSIYADAN O'TGAN (APPROVED) KITOBLARNI CHIQARISH
   async function fetchApprovedBooks() {
     setLoading(true);
     const { data } = await supabase
@@ -231,14 +231,23 @@ export default function BooksPage() {
                 </div>
 
                 <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
-                  <a
-                    href={book.file_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full text-center py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition"
-                  >
-                    Mutolaa qilish 📖
-                  </a>
+                  {book.is_free ? (
+                    <a
+                      href={book.file_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full text-center py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition"
+                    >
+                      Mutolaa qilish 📖
+                    </a>
+                  ) : (
+                    <Link
+                      href={`/checkout?bookId=${book.id}`}
+                      className="w-full text-center py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition block"
+                    >
+                      Sotib olish ({Number(book.price).toLocaleString()} so'm) 💳
+                    </Link>
+                  )}
                 </div>
               </div>
             ))}
@@ -394,7 +403,7 @@ export default function BooksPage() {
           <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-2xl w-full max-h-[80vh] flex flex-col justify-between shadow-2xl">
             <h3 className="text-lg font-black text-slate-900 mb-4">LexonAI Platformasi Ommaviy Oferta Shartnomasi</h3>
             <div className="overflow-y-auto pr-2 space-y-3 text-xs text-slate-600 leading-relaxed font-normal">
-              <p className="font-bold text-slate-800">1. Moderatsiya va Tasdiqlash</p>
+              <p className="font-bold text-slate-800">Moderatsiya va Tasdiqlash</p>
               <p>
                 Platformaga yuklangan har bir adabiyot mualliflik huquqiga muvofiqligi bo'yicha administrator tomonidan tekshiriladi va faqat tasdiqlangandan so'ng umumiy katalogga chiqariladi.
               </p>
