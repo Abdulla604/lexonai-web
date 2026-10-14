@@ -160,7 +160,7 @@ export default function Home() {
     if (container && container.childElementCount === 0) {
       const script = document.createElement("script");
       script.src = "https://telegram.org/js/telegram-widget.js?22";
-      script.setAttribute("data-telegram-login", "lexonaiuz_bot"); // <-- Faqat botning username'i (https://siz qatnashgan qism olib tashlandi)
+      script.setAttribute("data-telegram-login", "lexonaiuz_bot");
       script.setAttribute("data-size", "large");
       script.setAttribute("data-onauth", "onTelegramAuth(user)");
       script.setAttribute("data-request-access", "write");
@@ -532,15 +532,29 @@ export default function Home() {
             booksList.slice(0, 4).map((book, idx) => (
               <div key={idx} className="bg-[#1A202C] rounded-2xl p-5 border border-slate-800 shadow-sm hover:shadow-md transition flex flex-col justify-between">
                 <div>
-                  <span className="inline-block px-2.5 py-1 bg-blue-500/10 text-blue-400 rounded-lg text-[10px] font-bold mb-3">
-                    {book.category}
-                  </span>
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="inline-block px-2.5 py-1 bg-blue-500/10 text-blue-400 rounded-lg text-[10px] font-bold">
+                      {book.category}
+                    </span>
+                    <span className={`text-xs font-black ${book.is_free ? 'text-emerald-400' : 'text-indigo-400'}`}>
+                      {book.is_free ? 'BEPUL' : `${Number(book.price).toLocaleString()} so'm`}
+                    </span>
+                  </div>
                   <h3 className="font-bold text-slate-100 text-sm line-clamp-2">{book.title}</h3>
                   <p className="text-xs text-slate-400 mt-1">{book.author_name}</p>
                 </div>
-                <div className="flex items-center justify-between pt-4 mt-4 border-t border-slate-800 text-xs font-medium text-slate-400">
-                  <span>👁️ {book.views_count || 0} ko'rish</span>
-                  <a href={book.file_url} target="_blank" rel="noopener noreferrer" className="text-blue-400 font-bold hover:underline">O'qish</a>
+                
+                <div className="pt-4 mt-4 border-t border-slate-800 flex items-center justify-between text-xs">
+                  <span className="text-slate-500">👁️ {book.views_count || 0} ko'rish</span>
+                  {book.is_free ? (
+                    <a href={book.file_url} target="_blank" rel="noopener noreferrer" className="text-blue-400 font-bold hover:underline">
+                      O'qish 📖
+                    </a>
+                  ) : (
+                    <Link href={`/checkout?bookId=${book.id}`} className="text-indigo-400 font-bold hover:underline">
+                      Sotib olish 💳
+                    </Link>
+                  )}
                 </div>
               </div>
             ))
@@ -593,15 +607,6 @@ export default function Home() {
             <p className="text-slate-300 text-xs leading-relaxed font-medium">
               O'zbekiston Respublikasi qonunchiligi, huquqiy darsliklar, sun'iy intellekt yordamchisi, mualliflar uchun daromad ulushi va kunlik mukofotlar platformasi.
             </p>
-            <div className="pt-2">
-              <p className="font-bold text-white mb-2">Platforma kimlar uchun?</p>
-              <div className="flex flex-wrap gap-1.5">
-                <span className="px-2.5 py-1 bg-blue-500/10 text-blue-400 rounded-lg text-[10px] font-bold border border-blue-500/20">⚖️ Huquqshunoslar</span>
-                <span className="px-2.5 py-1 bg-indigo-500/10 text-indigo-400 rounded-lg text-[10px] font-bold border border-indigo-500/20">📚 Talabalar</span>
-                <span className="px-2.5 py-1 bg-purple-500/10 text-purple-400 rounded-lg text-[10px] font-bold border border-purple-500/20">✍️ Mualliflar</span>
-                <span className="px-2.5 py-1 bg-emerald-500/10 text-emerald-400 rounded-lg text-[10px] font-bold border border-emerald-500/20">💼 Tadbirkorlar</span>
-              </div>
-            </div>
           </div>
 
           <div className="md:col-span-3 space-y-3">
@@ -630,24 +635,9 @@ export default function Home() {
                 href="https://t.me/lexonaiuz" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="flex items-center gap-3 px-4 py-2.5 bg-slate-900 hover:bg-[#229ED9]/20 text-slate-200 hover:text-[#229ED9] rounded-xl font-bold transition border border-slate-800 group"
+                className="flex items-center gap-3 px-4 py-2.5 bg-slate-900 hover:bg-[#229ED9]/20 text-slate-200 hover:text-[#229ED9] rounded-xl font-bold transition border border-slate-800"
               >
-                <svg className="w-5 h-5 fill-[#229ED9]" viewBox="0 0 24 24">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.03-1.99 1.27-5.62 3.72-.53.36-1.01.54-1.44.53-.47-.02-1.37-.26-2.03-.48-.82-.27-1.47-.42-1.42-.88.03-.25.38-.51 1.06-.78 4.16-1.82 6.94-3.02 8.34-3.61 3.97-1.67 4.79-1.96 5.33-1.97.12 0 .38.03.55.17.14.12.18.28.2.45z"/>
-                </svg>
                 <span>Telegram Kanal</span>
-              </a>
-
-              <a 
-                href="https://www.instagram.com/lexonai_uz" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="flex items-center gap-3 px-4 py-2.5 bg-slate-900 hover:bg-[#E4405F]/20 text-slate-200 hover:text-[#E4405F] rounded-xl font-bold transition border border-slate-800 group"
-              >
-                <svg className="w-5 h-5 fill-[#E4405F]" viewBox="0 0 24 24">
-                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                </svg>
-                <span>Instagram Sahifa</span>
               </a>
             </div>
           </div>
@@ -676,9 +666,6 @@ export default function Home() {
                 KUNLIK MUKOFOTLAR
               </div>
               <h3 className="text-xl sm:text-2xl font-black">Har kuni kirish orqali coinlar yig'ing!</h3>
-              <p className="text-xs text-slate-400 mt-1">
-                {canClaimToday ? `Bugungi (${currentStreakDay}-kun) mukofotingizni oling!` : "Bugungi mukofot olindi. Ertaga keyingi kun ochiladi!"}
-              </p>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
@@ -699,12 +686,7 @@ export default function Home() {
                   >
                     <div>
                       <p className="text-xs font-bold text-slate-400">Kun {day}</p>
-                      
-                      <div className="w-12 h-12 my-3 mx-auto rounded-full bg-gradient-to-tr from-amber-500 to-amber-300 border border-amber-200 flex items-center justify-center text-slate-950 font-black text-lg shadow-md">
-                        Lexon
-                      </div>
-
-                      <p className="text-xs font-black text-slate-200">{day} ta coin</p>
+                      <p className="text-xs font-black text-slate-200 mt-2">{day} ta coin</p>
                     </div>
 
                     <div className="mt-4 w-full">
@@ -744,7 +726,7 @@ export default function Home() {
       {showCookie && (
         <div className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:max-w-md bg-[#1A202C] border border-slate-800 p-5 rounded-2xl shadow-2xl z-50 flex flex-col gap-4">
           <p className="text-xs text-slate-300 leading-relaxed">
-            Sayt ishlashi uchun zarur cookie fayllardan foydalanamiz. Tahlil cookie fayllari faqat roziligingizdan keyin yoqiladi. <Link href="/oferta" className="text-blue-400 underline">Maxfiylik siyosati</Link>
+            Sayt ishlashi uchun zarur cookie fayllardan foydalanamiz. <Link href="/oferta" className="text-blue-400 underline">Maxfiylik siyosati</Link>
           </p>
           <div className="flex items-center gap-3">
             <button
